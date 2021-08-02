@@ -17,6 +17,8 @@ const SearchFiltersPrimaryComponent = props => {
     isSecondaryFiltersOpen,
     toggleSecondaryFiltersOpen,
     selectedSecondaryFiltersCount,
+    toggleMap,
+    isMapShown
   } = props;
 
   const hasNoResult = listingsAreLoaded && resultsCount === 0;
@@ -54,6 +56,9 @@ const SearchFiltersPrimaryComponent = props => {
           </div>
         ) : null}
         {sortByComponent}
+        <div className={css.mapIcon} onClick={toggleMap}>
+          <FormattedMessage id={`SearchFiltersMobile.${isMapShown ? 'closeMap' : 'openMap'}`} className={css.mapIconText} />
+        </div>
       </div>
 
       <div className={css.filters}>

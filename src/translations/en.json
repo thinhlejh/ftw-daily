@@ -738,6 +738,8 @@
   "SearchFiltersMobile.keywordLabel": "Keyword",
   "SearchFiltersMobile.loadingResults": "Loading…",
   "SearchFiltersMobile.openMapView": "Map",
+  "SearchFiltersMobile.openMap": "Open map",
+  "SearchFiltersMobile.closeMap": "Close map",
   "SearchFiltersMobile.noResults": "No results.",
   "SearchFiltersMobile.resetAll": "Reset all",
   "SearchFiltersMobile.showListings": "Show {count, number} {count, plural, one {sauna} other {saunas}}",

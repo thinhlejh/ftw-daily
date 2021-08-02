@@ -37,6 +37,7 @@ export class SearchPageComponent extends Component {
     this.state = {
       isSearchMapOpenOnMobile: props.tab === 'map',
       isMobileModalOpen: false,
+      isMapShown: true,
     };
 
     this.searchMapListingsInProgress = false;
@@ -139,11 +140,18 @@ export class SearchPageComponent extends Component {
     const isWindowDefined = typeof window !== 'undefined';
     const isMobileLayout = isWindowDefined && window.innerWidth < MODAL_BREAKPOINT;
     const shouldShowSearchMap =
-      !isMobileLayout || (isMobileLayout && this.state.isSearchMapOpenOnMobile);
+      (!isMobileLayout && this.state.isMapShown) || (isMobileLayout && this.state.isSearchMapOpenOnMobile);
 
     const onMapIconClick = () => {
       this.useLocationSearchBounds = true;
       this.setState({ isSearchMapOpenOnMobile: true });
+    };
+
+    const toggleMap = () => {
+      if(!shouldShowSearchMap) {
+        this.useLocationSearchBounds = true;
+      }
+      this.setState({ isMapShown: !this.state.isMapShown });
     };
 
     const { address, bounds, origin } = searchInURL || {};
@@ -181,6 +189,8 @@ export class SearchPageComponent extends Component {
             onOpenModal={this.onOpenMobileModal}
             onCloseModal={this.onCloseMobileModal}
             onMapIconClick={onMapIconClick}
+            toggleMap={toggleMap}
+            isMapShown={shouldShowSearchMap}
             pagination={pagination}
             searchParamsForPagination={parse(location.search)}
             showAsModalMaxWidth={MODAL_BREAKPOINT}

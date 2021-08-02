@@ -25,6 +25,24 @@
   margin-bottom: 24px;
 }
 
+.mapIcon {
+  /* Font */
+  @apply --marketplaceTinyFontStyles;
+  font-weight: var(--fontWeightMedium);
+
+  /* background map image */
+  background-image: url(./images/map_icon216x105.png);
+  background-size: cover;
+
+  border-radius: 3px;
+  /* width: 72px; */
+  height: 35px;
+  padding: var(--marketplaceButtonSmallDesktopPadding);
+  margin: 0px;
+  margin-left: 8px;
+  align-self: center
+}
+
 .searchResultSummary {
   @apply --marketplaceH4FontStyles;
   line-height: 20px;
