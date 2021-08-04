@@ -74,34 +74,79 @@ export const filters = [
     config: {},
   },
   {
-    id: 'category',
-    label: 'Category',
+    id: 'level',
+    label: 'Level',
     type: 'SelectSingleFilter',
     group: 'secondary',
-    queryParamNames: ['pub_category'],
+    queryParamNames: ['pub_level'],
     config: {
       // "key" is the option you see in Flex Console.
       // "label" is set here for the UI only.
       // Note: label is not added through the translation files
       // to make filter customizations a bit easier.
       options: [
-        { key: 'smoke', label: 'Smoke' },
-        { key: 'electric', label: 'Electric' },
-        { key: 'wood', label: 'Wood' },
-        { key: 'other', label: 'Other' },
+        { key: 'beginner', label: 'Beginner' },
+        { key: 'intermediate', label: 'Intermediate' },
+        { key: 'advanced', label: 'Advanced' },
       ],
     },
   },
   {
-    id: 'amenities',
-    label: 'Amenities',
+    id: 'duration',
+    label: 'Duration',
+    type: 'SelectSingleFilter',
+    group: 'secondary',
+    queryParamNames: ['pub_duration'],
+    config: {
+      // "key" is the option you see in Flex Console.
+      // "label" is set here for the UI only.
+      // Note: label is not added through the translation files
+      // to make filter customizations a bit easier.
+      options: [
+        { key: '1', label: '1 hour' },
+        { key: '2', label: '2 hours' },
+        { key: '3', label: '3 hours' },
+        { key: '4', label: '4 hours' },
+        { key: '5', label: '5 hours' },
+        { key: '6', label: '6 hours' },
+        { key: '7', label: '7 hours' },
+        { key: '8', label: '8 hours (full-time)' },
+      ],
+    },
+  },
+  {
+    id: 'subject',
+    label: 'Subject',
+    type: 'SelectSingleFilter',
+    group: 'secondary',
+    queryParamNames: ['pub_subject'],
+    config: {
+      // "key" is the option you see in Flex Console.
+      // "label" is set here for the UI only.
+      // Note: label is not added through the translation files
+      // to make filter customizations a bit easier.
+      options: [
+        { key: 'programming', label: 'Programming' },
+        { key: 'language', label: 'Language' },
+        { key: 'economy', label: 'Economy' },
+        { key: 'ideology', label: 'Ideology' },
+        { key: 'politics', label: 'Politics' },
+        { key: 'architecture', label: 'Architecture' },
+        { key: 'science', label: 'Science' },
+        { key: 'social', label: 'Social' },
+      ],
+    },
+  },
+  {
+    id: 'perks',
+    label: 'Perks',
     type: 'SelectMultipleFilter',
     group: 'secondary',
-    queryParamNames: ['pub_amenities'],
+    queryParamNames: ['pub_perks'],
     config: {
       // Optional modes: 'has_all', 'has_any'
       // https://www.sharetribe.com/api-reference/marketplace.html#extended-data-filtering
-      searchMode: 'has_all',
+      searchMode: 'has_any',
 
       // "key" is the option you see in Flex Console.
       // "label" is set here for this web app's UI only.
@@ -109,36 +154,28 @@ export const filters = [
       // to make filter customizations a bit easier.
       options: [
         {
-          key: 'towels',
-          label: 'Towels',
+          key: 'certificate',
+          label: 'Certificate of completion',
         },
         {
-          key: 'bathroom',
-          label: 'Bathroom',
+          key: 'practice',
+          label: 'Practice tests',
         },
         {
-          key: 'swimming_pool',
-          label: 'Swimming pool',
+          key: 'downloadable',
+          label: 'Downloadable Resources',
         },
         {
-          key: 'own_drinks',
-          label: 'Own drinks allowed',
+          key: 'asking_allowed',
+          label: 'Asking allowed',
         },
         {
-          key: 'jacuzzi',
-          label: 'Jacuzzi',
+          key: 'keep_in_touch',
+          label: 'Keep in touch after completion',
         },
         {
-          key: 'audiovisual_entertainment',
-          label: 'Audiovisual entertainment',
-        },
-        {
-          key: 'barbeque',
-          label: 'Barbeque',
-        },
-        {
-          key: 'own_food_allowed',
-          label: 'Own food allowed',
+          key: 'tips',
+          label: 'Free tips',
         },
       ],
     },

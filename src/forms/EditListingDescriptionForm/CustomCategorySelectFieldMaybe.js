@@ -5,7 +5,7 @@ import { FieldSelect } from '../../components';
 import css from './EditListingDescriptionForm.module.css';
 
 const CustomCategorySelectFieldMaybe = props => {
-  const { name, id, categories, intl } = props;
+  const { name, id, levels, intl } = props;
   const categoryLabel = intl.formatMessage({
     id: 'EditListingDescriptionForm.categoryLabel',
   });
@@ -17,7 +17,7 @@ const CustomCategorySelectFieldMaybe = props => {
       id: 'EditListingDescriptionForm.categoryRequired',
     })
   );
-  return categories ? (
+  return levels ? (
     <FieldSelect
       className={css.category}
       name={name}
@@ -28,7 +28,7 @@ const CustomCategorySelectFieldMaybe = props => {
       <option disabled value="">
         {categoryPlaceholder}
       </option>
-      {categories.map(c => (
+      {levels.map(c => (
         <option key={c.key} value={c.key}>
           {c.label}
         </option>

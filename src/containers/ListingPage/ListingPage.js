@@ -376,12 +376,20 @@ export class ListingPageComponent extends Component {
       </NamedLink>
     );
 
-    const amenityOptions = findOptionsForSelectFilter('amenities', filterConfig);
-    const categoryOptions = findOptionsForSelectFilter('category', filterConfig);
-    const category =
-      publicData && publicData.category ? (
+    const perkOptions = findOptionsForSelectFilter('perks', filterConfig);
+    const levelOptions = findOptionsForSelectFilter('level', filterConfig);
+    const durationOptions = findOptionsForSelectFilter('duration', filterConfig);
+    const level =
+      publicData && publicData.level ? (
         <span>
-          {categoryLabel(categoryOptions, publicData.category)}
+          {categoryLabel(levelOptions, publicData.level)}
+          <span className={css.separator}>•</span>
+        </span>
+      ) : null;
+      const duration =
+      publicData && publicData.duration ? (
+        <span>
+          {categoryLabel(durationOptions, publicData.duration.toString())}
           <span className={css.separator}>•</span>
         </span>
       ) : null;
@@ -429,13 +437,14 @@ export class ListingPageComponent extends Component {
                     priceTitle={priceTitle}
                     formattedPrice={formattedPrice}
                     richTitle={richTitle}
-                    category={category}
+                    level={level}
+                    duration={duration}
                     hostLink={hostLink}
                     showContactUser={showContactUser}
                     onContactUser={this.onContactUser}
                   />
                   <SectionDescriptionMaybe description={description} />
-                  <SectionFeaturesMaybe options={amenityOptions} publicData={publicData} />
+                  <SectionFeaturesMaybe options={perkOptions} publicData={publicData} />
                   <SectionRulesMaybe publicData={publicData} />
                   <SectionMapMaybe
                     geolocation={geolocation}

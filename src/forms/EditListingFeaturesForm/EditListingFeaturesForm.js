@@ -3,13 +3,14 @@ import { bool, func, shape, string } from 'prop-types';
 import classNames from 'classnames';
 import { Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-import { FormattedMessage } from '../../util/reactIntl';
+import { FormattedMessage, injectIntl } from '../../util/reactIntl';
 import { findOptionsForSelectFilter } from '../../util/search';
 import { propTypes } from '../../util/types';
 import config from '../../config';
 import { Button, FieldCheckboxGroup, Form } from '../../components';
 
 import css from './EditListingFeaturesForm.module.css';
+import SubjectSelectFieldMaybe from './SubjectSelectFieldMaybe';
 
 const EditListingFeaturesFormComponent = props => (
   <FinalForm
@@ -21,7 +22,7 @@ const EditListingFeaturesFormComponent = props => (
         ready,
         rootClassName,
         className,
-        name,
+        invalid,
         handleSubmit,
         pristine,
         saveActionMsg,
@@ -29,12 +30,13 @@ const EditListingFeaturesFormComponent = props => (
         updateInProgress,
         fetchErrors,
         filterConfig,
+        intl,
       } = formRenderProps;
 
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = disabled || submitInProgress;
+      const submitDisabled = invalid || disabled || submitInProgress;
 
       const { updateListingError, showListingsError } = fetchErrors || {};
       const errorMessage = updateListingError ? (
@@ -49,13 +51,15 @@ const EditListingFeaturesFormComponent = props => (
         </p>
       ) : null;
 
-      const options = findOptionsForSelectFilter('amenities', filterConfig);
+      const options = findOptionsForSelectFilter('perks', filterConfig);
+      const subjects = findOptionsForSelectFilter('subject', filterConfig);
       return (
         <Form className={classes} onSubmit={handleSubmit}>
           {errorMessage}
           {errorMessageShowListing}
 
-          <FieldCheckboxGroup className={css.features} id={name} name={name} options={options} />
+          <SubjectSelectFieldMaybe id="subject" name="subject" subjects={subjects} intl={intl} />
+          <FieldCheckboxGroup className={css.features} id="perks" name="perks" options={options} />
 
           <Button
             className={css.submitButton}
@@ -98,4 +102,4 @@ EditListingFeaturesFormComponent.propTypes = {
 
 const EditListingFeaturesForm = EditListingFeaturesFormComponent;
 
-export default EditListingFeaturesForm;
+export default injectIntl(EditListingFeaturesForm);
