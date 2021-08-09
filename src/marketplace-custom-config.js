@@ -209,3 +209,34 @@ export const sortConfig = {
     { key: 'relevance', label: 'Relevance', longLabel: 'Relevance (Keyword search)' },
   ],
 };
+
+export const availabilityConfig = [
+  {
+    key: 'mon',
+    label: 'Monday',
+  },
+  {
+    key: 'tue',
+    label: 'Tuesday',
+  },
+  {
+    key: 'wed',
+    label: 'Wednesday',
+  },
+  {
+    key: 'thu',
+    label: 'Thursday',
+  },
+  {
+    key: 'fri',
+    label: 'Friday',
+  },
+  {
+    key: 'sat',
+    label: 'Saturday',
+  },
+  {
+    key: 'sun',
+    label: 'Sunday',
+  }
+];

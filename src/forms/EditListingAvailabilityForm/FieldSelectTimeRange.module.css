@@ -1,0 +1,79 @@
+.root {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.list {
+  margin: 0;
+}
+
+.twoColumns {
+  @media (--viewportMedium) {
+    columns: 2;
+  }
+}
+
+.item {
+  padding: 2px 0;
+
+  /* Fix broken multi-column layout in Chrome */
+  page-break-inside: avoid;
+
+  @media (--viewportMedium) {
+    padding: 4px 0;
+  }
+}
+
+.timePicker {
+  width: 100%;
+}
+
+.buttonAddNew {
+  @apply --marketplaceH5FontStyles;
+  color: var(--matterColor);
+  margin-top: 6px;
+}
+
+.fieldWrapper {
+  /* This container uses flexbox layout */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  /* parent aka root is flexbox, this container takes all available space */
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  padding-bottom: 6px;
+
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 41px;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+.formRow {
+  /* This container uses flexbox layout */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  /* parent aka fieldWrapper is flexbox, this container takes all available space */
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+
+  z-index: 1;
+}
+
+.fieldSelect {
+  margin-right: 30px;
+  align-items: center;
+}

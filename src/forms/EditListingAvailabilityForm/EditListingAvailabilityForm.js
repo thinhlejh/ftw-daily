@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import { bool, func, object, string } from 'prop-types';
 import { compose } from 'redux';
-import { Form as FinalForm } from 'react-final-form';
+import  { Form as FinalForm } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
 import { intlShape, injectIntl, FormattedMessage } from '../../util/reactIntl';
 import classNames from 'classnames';
 import { propTypes } from '../../util/types';
 import { Form, Button } from '../../components';
+import { availabilityConfig } from '../../marketplace-custom-config';
 
-import ManageAvailabilityCalendar from './ManageAvailabilityCalendar';
 import css from './EditListingAvailabilityForm.module.css';
+import FieldSelectTimeRange from './FieldSelectTimeRange';
 
 export class EditListingAvailabilityFormComponent extends Component {
   render() {
     return (
       <FinalForm
         {...this.props}
+        mutators={{ ...arrayMutators }}
         render={formRenderProps => {
           const {
             className,
@@ -29,9 +32,10 @@ export class EditListingAvailabilityFormComponent extends Component {
             updated,
             updateError,
             updateInProgress,
-            availability,
-            availabilityPlan,
-            listingId,
+            // availability,
+            // availabilityPlan,
+            // listingId,
+            values
           } = formRenderProps;
 
           const errorMessage = updateError ? (
@@ -48,13 +52,7 @@ export class EditListingAvailabilityFormComponent extends Component {
           return (
             <Form className={classes} onSubmit={handleSubmit}>
               {errorMessage}
-              <div className={css.calendarWrapper}>
-                <ManageAvailabilityCalendar
-                  availability={availability}
-                  availabilityPlan={availabilityPlan}
-                  listingId={listingId}
-                />
-              </div>
+              <FieldSelectTimeRange options={availabilityConfig} />
 
               <Button
                 className={css.submitButton}
