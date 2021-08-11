@@ -54,34 +54,13 @@ const EditListingAvailabilityPanel = props => {
     return prev;
   }, {});
   const { 
-    mon=[{
-      startTime: null,
-      endTime: null,
-    }],
-    tue=[{
-      startTime: null,
-      endTime: null,
-    }],
-    wed=[{
-      startTime: null,
-      endTime: null,
-    }],
-    thu=[{
-      startTime: null,
-      endTime: null,
-    }],
-    fri=[{
-      startTime: null,
-      endTime: null,
-    }],
-    sat=[{
-      startTime: null,
-      endTime: null,
-    }],
-    sun=[{
-      startTime: null,
-      endTime: null,
-    }],
+    mon=[{...config.defaultTimeRange}],
+    tue=[{...config.defaultTimeRange}],
+    wed=[{...config.defaultTimeRange}],
+    thu=[{...config.defaultTimeRange}],
+    fri=[{...config.defaultTimeRange}],
+    sat=[{...config.defaultTimeRange}],
+    sun=[{...config.defaultTimeRange}],
    } = startTimes;
   
   const durationOptions = findOptionsForSelectFilter('duration', config.custom.filters);

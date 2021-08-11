@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { propTypes } from '../../util/types';
 import { Form, Button } from '../../components';
 import { availabilityConfig } from '../../marketplace-custom-config';
+import config from '../../config';
 
 import css from './EditListingAvailabilityForm.module.css';
 import FieldSelectTimeRange from './FieldSelectTimeRange';
@@ -56,34 +57,13 @@ export class EditListingAvailabilityFormComponent extends Component {
               form.reset({
                 duration,
                 daysOfWeek: [],
-                mon: [{
-                  startTime: null,
-                  endTime: null,
-                }],
-                tue: [{
-                  startTime: null,
-                  endTime: null,
-                }],
-                wed: [{
-                  startTime: null,
-                  endTime: null,
-                }],
-                thu: [{
-                  startTime: null,
-                  endTime: null,
-                }],
-                fri: [{
-                  startTime: null,
-                  endTime: null,
-                }],
-                sat: [{
-                  startTime: null,
-                  endTime: null,
-                }],
-                sun: [{
-                  startTime: null,
-                  endTime: null,
-                }],
+                mon: [{...config.defaultTimeRange}],
+                tue: [{...config.defaultTimeRange}],
+                wed: [{...config.defaultTimeRange}],
+                thu: [{...config.defaultTimeRange}],
+                fri: [{...config.defaultTimeRange}],
+                sat: [{...config.defaultTimeRange}],
+                sun: [{...config.defaultTimeRange}],
               });
             }
           }, [dirtyFields]);

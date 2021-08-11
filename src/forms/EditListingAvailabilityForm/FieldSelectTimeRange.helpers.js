@@ -1,6 +1,8 @@
-export const filterOutSelectedRange = (fields, duration, startHours, index) => {
+import config from "../../config";
+
+export const filterOutSelectedRange = (fields, duration, index) => {
   const { value } = fields;
-  const result = [...startHours];
+  const result = [...config.timeRange];
   value.map((val, i) => {
     if (i === index) {
       return;
@@ -11,7 +13,7 @@ export const filterOutSelectedRange = (fields, duration, startHours, index) => {
   return result.filter(time => {
     const endTimeRaw = parseInt(time.split(':')[0]) + duration;
     const endTime = endTimeRaw > 9 ? `${endTimeRaw}:00` : `0${endTimeRaw}:00`;
-    return result.find(t => t === endTime);
+    return result.includes(endTime);
   });
 };
 

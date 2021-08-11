@@ -16,10 +16,7 @@ import { FieldCheckbox, ValidationError, FieldSelect, InlineTextButton, IconClos
 import css from './FieldSelectTimeRange.module.css';
 import { filterOutSelectedRange, selectEndTime } from './FieldSelectTimeRange.helpers';
 import { FormattedMessage } from 'react-intl/dist/react-intl';
-
-const hoursPerDay = [...Array(24).keys()];
-const startHours = hoursPerDay.map((_, index) => index > 9 ? `${index}:00` : `0${index}:00`);
-const endHours = hoursPerDay.map((_, index) => index > 9 ? `${index}:00` : `0${index}:00`);
+import config from '../../config';
 
 const FieldSelectTimeRangeRenderer = props => {
   const { className, rootClassName, label, twoColumns, id, fields, options, meta, duration } = props;
@@ -48,7 +45,7 @@ const FieldSelectTimeRangeRenderer = props => {
                     return (
                       <div className={css.timePicker}>
                         {fields.map((name, index) => {
-                          const filtered = filterOutSelectedRange(fields, duration, startHours, index);
+                          const filtered = filterOutSelectedRange(fields, duration, index);
                           if (!fields.value[index].startTime) {
                             fields.value[index].startTime = filtered[0];
                           }
@@ -76,7 +73,7 @@ const FieldSelectTimeRangeRenderer = props => {
                                   name={`${name}.endTime`}
                                   label="End"
                                 >
-                                  {endHours.map(
+                                  {config.timeRange.map(
                                     s => (
                                       <option value={s} key={s}>
                                         {s}
@@ -95,11 +92,11 @@ const FieldSelectTimeRangeRenderer = props => {
                               </div>
                             )
                           })}
-                        {filterOutSelectedRange(fields, duration, startHours).length !== 0 && (
+                        {filterOutSelectedRange(fields, duration).length !== 0 && (
                           <InlineTextButton
                             type="button"
                             className={css.buttonAddNew}
-                            onClick={() => fields.push({ startTime: null, endTime: null })}
+                            onClick={() => fields.push({...config.defaultTimeRange})}
                           >
                             <FormattedMessage id="EditListingAvailabilityForm.addTime" />
                           </InlineTextButton>

@@ -189,6 +189,13 @@ const maps = {
   },
 };
 
+const defaultTimeRange = {
+  startTime: null,
+  endTime: null,
+};
+
+const timeRange = [...Array(24).keys()].map((_, index) => index > 9 ? `${index}:00` : `0${index}:00`);
+
 // NOTE: only expose configuration that should be visible in the
 // client side, don't add any server secrets in this file.
 const config = {
@@ -199,6 +206,8 @@ const config = {
   bookingUnitType,
   enableAvailability,
   dayCountAvailableForBooking,
+  defaultTimeRange,
+  timeRange,
   i18n,
   sdk: {
     clientId: sdkClientId,
