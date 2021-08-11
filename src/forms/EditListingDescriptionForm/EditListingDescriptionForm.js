@@ -10,7 +10,6 @@ import { Form, Button, FieldTextInput } from '../../components';
 import CustomCategorySelectFieldMaybe from './CustomCategorySelectFieldMaybe';
 
 import css from './EditListingDescriptionForm.module.css';
-import DurationSelectFieldMaybe from './DurationSelectFieldMaybe';
 
 const TITLE_MAX_LENGTH = 60;
 
@@ -20,7 +19,6 @@ const EditListingDescriptionFormComponent = props => (
     render={formRenderProps => {
       const {
         levels,
-        durations,
         className,
         disabled,
         ready,
@@ -115,13 +113,6 @@ const EditListingDescriptionFormComponent = props => (
             id="level"
             name="level"
             levels={levels}
-            intl={intl}
-          />
-
-          <DurationSelectFieldMaybe
-            id="duration"
-            name="duration"
-            durations={durations}
             intl={intl}
           />
 
