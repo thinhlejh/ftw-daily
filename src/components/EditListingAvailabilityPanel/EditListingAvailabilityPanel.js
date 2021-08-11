@@ -10,10 +10,10 @@ import { EditListingAvailabilityForm } from '../../forms';
 
 import css from './EditListingAvailabilityPanel.module.css';
 import { mapValuesToEntries } from './EditListingAvailabilityPanel.helpers';
+import { findOptionsForSelectFilter } from '../../util/search';
+import config from '../../config';
 
 const defaultTimeZone = () => typeof window !== 'undefined' ? getDefaultTimeZoneOnBrowser() : 'Etc/UTC';
-
-const HOURS_PER_DAY = new Array(24).fill();
 
 const EditListingAvailabilityPanel = props => {
   const {
@@ -41,7 +41,8 @@ const EditListingAvailabilityPanel = props => {
     entries: [],
   };
   const availabilityPlan = currentListing.attributes.availabilityPlan || defaultAvailabilityPlan;
-  const daysOfWeek = availabilityPlan.entries.map(entry => entry.dayOfWeek);
+  const duration = currentListing.attributes.publicData.duration || '1';
+  const daysOfWeek = [...new Set(availabilityPlan.entries.map(entry => entry.dayOfWeek))];
   const startTimes = availabilityPlan.entries.reduce((prev, entry) => {
     if (!prev[entry.dayOfWeek]) {
       prev[entry.dayOfWeek] = [];
@@ -53,35 +54,16 @@ const EditListingAvailabilityPanel = props => {
     return prev;
   }, {});
   const { 
-    mon=[{
-      startTime: '00:00',
-      endTime: '23:00',
-    }],
-    tue=[{
-      startTime: '00:00',
-      endTime: '23:00',
-    }],
-    wed=[{
-      startTime: '00:00',
-      endTime: '23:00',
-    }],
-    thu=[{
-      startTime: '00:00',
-      endTime: '23:00',
-    }],
-    fri=[{
-      startTime: '00:00',
-      endTime: '23:00',
-    }],
-    sat=[{
-      startTime: '00:00',
-      endTime: '23:00',
-    }],
-    sun=[{
-      startTime: '00:00',
-      endTime: '23:00',
-    }],
+    mon=[{...config.defaultTimeRange}],
+    tue=[{...config.defaultTimeRange}],
+    wed=[{...config.defaultTimeRange}],
+    thu=[{...config.defaultTimeRange}],
+    fri=[{...config.defaultTimeRange}],
+    sat=[{...config.defaultTimeRange}],
+    sun=[{...config.defaultTimeRange}],
    } = startTimes;
+  
+  const durationOptions = findOptionsForSelectFilter('duration', config.custom.filters);
 
   return (
     <div className={classes}>
@@ -98,20 +80,22 @@ const EditListingAvailabilityPanel = props => {
       <EditListingAvailabilityForm
         className={css.form}
         listingId={currentListing.id}
-        initialValues={{ daysOfWeek, mon, tue, wed, thu, fri, sat, sun }}
+        initialValues={{ daysOfWeek, mon, tue, wed, thu, fri, sat, sun, duration }}
         availability={availability}
         availabilityPlan={availabilityPlan}
+        durations={durationOptions}
         onSubmit={(values) => {
-          // We save the default availability plan
-          // I.e. this listing is available every night.
-          // Exceptions are handled with live edit through a calendar,
-          // which is visible on this panel.
-          console.log(values);
+          const { duration, ...rest } = values;
           const submitValue = {
             ...availabilityPlan,
-            entries: mapValuesToEntries(values)
+            entries: mapValuesToEntries(rest)
           };
-          onSubmit({ availabilityPlan: submitValue });
+          onSubmit({ 
+            availabilityPlan: submitValue, 
+            publicData: {
+              duration: parseInt(duration),
+            }
+          });
         }}
         onChange={onChange}
         saveActionMsg={submitButtonText}

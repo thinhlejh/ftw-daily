@@ -1,3 +1,5 @@
+@import '../../styles/propertySets.css';
+
 .root {
   margin: 0;
   padding: 0;
@@ -35,40 +37,17 @@
   margin-top: 6px;
 }
 
-.fieldWrapper {
-  /* This container uses flexbox layout */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-
-  /* parent aka root is flexbox, this container takes all available space */
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-wrap: nowrap;
-  padding-bottom: 6px;
-
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    top: 41px;
-    left: 0;
-    width: 100%;
-    z-index: 0;
-  }
-}
-
 .formRow {
   /* This container uses flexbox layout */
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
-  /* parent aka fieldWrapper is flexbox, this container takes all available space */
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-wrap: nowrap;
+  width: fit-content;
+
+  padding-bottom: 6px;
+
+  border-bottom: 1px solid var(--matterColorNegative);
 
   z-index: 1;
 }
@@ -76,4 +55,9 @@
 .fieldSelect {
   margin-right: 30px;
   align-items: center;
+  min-width: 100px;
+}
+
+.closeIcon {
+  color: red;
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { bool, func, object, string } from 'prop-types';
 import { compose } from 'redux';
 import  { Form as FinalForm } from 'react-final-form';
@@ -8,9 +8,11 @@ import classNames from 'classnames';
 import { propTypes } from '../../util/types';
 import { Form, Button } from '../../components';
 import { availabilityConfig } from '../../marketplace-custom-config';
+import config from '../../config';
 
 import css from './EditListingAvailabilityForm.module.css';
 import FieldSelectTimeRange from './FieldSelectTimeRange';
+import DurationSelectFieldMaybe from './DurationSelectFieldMaybe';
 
 export class EditListingAvailabilityFormComponent extends Component {
   render() {
@@ -24,18 +26,18 @@ export class EditListingAvailabilityFormComponent extends Component {
             rootClassName,
             disabled,
             ready,
+            intl,
             handleSubmit,
-            //intl,
             invalid,
             pristine,
+            dirtyFields,
             saveActionMsg,
             updated,
             updateError,
             updateInProgress,
-            // availability,
-            // availabilityPlan,
-            // listingId,
-            values
+            durations,
+            values,
+            form
           } = formRenderProps;
 
           const errorMessage = updateError ? (
@@ -44,15 +46,42 @@ export class EditListingAvailabilityFormComponent extends Component {
             </p>
           ) : null;
 
+          const { duration } = values;
           const classes = classNames(rootClassName || css.root, className);
           const submitReady = (updated && pristine) || ready;
           const submitInProgress = updateInProgress;
           const submitDisabled = invalid || disabled || submitInProgress;
 
+          useEffect(() => {
+            if (dirtyFields.duration) {
+              form.reset({
+                duration,
+                daysOfWeek: [],
+                mon: [{...config.defaultTimeRange}],
+                tue: [{...config.defaultTimeRange}],
+                wed: [{...config.defaultTimeRange}],
+                thu: [{...config.defaultTimeRange}],
+                fri: [{...config.defaultTimeRange}],
+                sat: [{...config.defaultTimeRange}],
+                sun: [{...config.defaultTimeRange}],
+              });
+            }
+          }, [dirtyFields]);
+
           return (
             <Form className={classes} onSubmit={handleSubmit}>
               {errorMessage}
-              <FieldSelectTimeRange options={availabilityConfig} />
+
+              <DurationSelectFieldMaybe
+                id="duration"
+                name="duration"
+                durations={durations}
+                intl={intl}
+              />
+              <FieldSelectTimeRange
+                duration={parseInt(duration)}
+                label={intl.formatMessage({ id: 'FieldSelectTimeRange.label' })}
+                options={availabilityConfig} />
 
               <Button
                 className={css.submitButton}

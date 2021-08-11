@@ -11,16 +11,15 @@ import React from 'react';
 import { arrayOf, bool, node, shape, string } from 'prop-types';
 import classNames from 'classnames';
 import { FieldArray } from 'react-final-form-arrays';
-import { FieldCheckbox, ValidationError, FieldSelect, InlineTextButton } from '../../components';
+import { FieldCheckbox, ValidationError, FieldSelect, InlineTextButton, IconClose } from '../../components';
 
 import css from './FieldSelectTimeRange.module.css';
-
-const hoursPerDay = [...Array(24).keys()];
-const startHours = hoursPerDay.map((_, index) => index > 9 ? `${index}:00` : `0${index}:00`);
-const endHours = hoursPerDay.map((_, index) => index > 9 ? `${index}:00` : `0${index}:00`);
+import { filterOutSelectedRange, selectEndTime } from './FieldSelectTimeRange.helpers';
+import { FormattedMessage } from 'react-intl/dist/react-intl';
+import config from '../../config';
 
 const FieldSelectTimeRangeRenderer = props => {
-  const { className, rootClassName, label, twoColumns, id, fields, options, meta } = props;
+  const { className, rootClassName, label, twoColumns, id, fields, options, meta, duration } = props;
   const { value } = fields;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -28,7 +27,7 @@ const FieldSelectTimeRangeRenderer = props => {
 
   return (
     <fieldset className={classes}>
-      {label ? <legend>{label}</legend> : null}
+      {label ? <label htmlFor={id}>{label}</label> : null}
       <ul className={listClasses}>
         {options.map((option) => {
           const fieldId = `${id}.${option.key}`;
@@ -46,16 +45,20 @@ const FieldSelectTimeRangeRenderer = props => {
                     return (
                       <div className={css.timePicker}>
                         {fields.map((name, index) => {
+                          const filtered = filterOutSelectedRange(fields, duration, index);
+                          if (!fields.value[index].startTime) {
+                            fields.value[index].startTime = filtered[0];
+                          }
+                          fields.value[index].endTime = selectEndTime(duration, fields.value[index].startTime);
                           return (
-                            <div className={css.fieldWrapper} key={name}>
-                              <div className={css.formRow}>
+                              <div className={css.formRow} key={name}>
                                 <FieldSelect
                                   rootClassName={css.fieldSelect}
                                   id={`${name}.startTime`}
                                   name={`${name}.startTime`}
                                   label="Start"
                                 >
-                                  {startHours.map(
+                                  {filtered.map(
                                     s => (
                                       <option value={s} key={s}>
                                         {s}
@@ -64,12 +67,13 @@ const FieldSelectTimeRangeRenderer = props => {
                                   )}
                                 </FieldSelect>
                                 <FieldSelect
+                                  disabled
                                   rootClassName={css.fieldSelect}
                                   id={`${name}.endTime`}
                                   name={`${name}.endTime`}
                                   label="End"
                                 >
-                                  {endHours.map(
+                                  {config.timeRange.map(
                                     s => (
                                       <option value={s} key={s}>
                                         {s}
@@ -77,17 +81,26 @@ const FieldSelectTimeRangeRenderer = props => {
                                     )
                                   )}
                                 </FieldSelect>
+                                {fields.length > 1 && (
+                                  <InlineTextButton
+                                    type="button"
+                                    onClick={() => fields.remove(index)}
+                                  >
+                                    <IconClose className={css.closeIcon} />
+                                  </InlineTextButton>
+                                )}
                               </div>
-                            </div>
                             )
                           })}
-                        <InlineTextButton
-                          type="button"
-                          className={css.buttonAddNew}
-                          onClick={() => fields.push({ startTime: '00:00', endTime: '23:00' })}
-                        >
-                          Add time
-                        </InlineTextButton>
+                        {filterOutSelectedRange(fields, duration).length !== 0 && (
+                          <InlineTextButton
+                            type="button"
+                            className={css.buttonAddNew}
+                            onClick={() => fields.push({...config.defaultTimeRange})}
+                          >
+                            <FormattedMessage id="EditListingAvailabilityForm.addTime" />
+                          </InlineTextButton>
+                        )}
                       </div>
                     )
                   }}
@@ -124,11 +137,5 @@ FieldSelectTimeRangeRenderer.propTypes = {
 };
 
 const FieldSelectTimeRange = props => <FieldArray component={FieldSelectTimeRangeRenderer} {...props} id="daysOfWeek" name="daysOfWeek" />;
-
-// Name and component are required fields for FieldArray.
-// Component-prop we define in this file, name needs to be passed in
-// FieldSelectTimeRange.propTypes = {
-//   name: string.isRequired,
-// };
 
 export default FieldSelectTimeRange;

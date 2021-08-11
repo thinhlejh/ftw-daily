@@ -379,6 +379,7 @@ export class ListingPageComponent extends Component {
     const perkOptions = findOptionsForSelectFilter('perks', filterConfig);
     const levelOptions = findOptionsForSelectFilter('level', filterConfig);
     const durationOptions = findOptionsForSelectFilter('duration', filterConfig);
+    const subjectOptions = findOptionsForSelectFilter('subject', filterConfig);
     const level =
       publicData && publicData.level ? (
         <span>
@@ -386,13 +387,20 @@ export class ListingPageComponent extends Component {
           <span className={css.separator}>•</span>
         </span>
       ) : null;
-      const duration =
-      publicData && publicData.duration ? (
-        <span>
-          {categoryLabel(durationOptions, publicData.duration.toString())}
-          <span className={css.separator}>•</span>
-        </span>
-      ) : null;
+    const duration =
+    publicData && publicData.duration ? (
+      <span>
+        {categoryLabel(durationOptions, publicData.duration.toString())}
+        <span className={css.separator}>•</span>
+      </span>
+    ) : null;
+    const subject =
+    publicData && publicData.subject ? (
+      <span>
+        {categoryLabel(subjectOptions, publicData.subject)}
+        <span className={css.separator}>•</span>
+      </span>
+    ) : null;
 
     return (
       <Page
@@ -439,6 +447,7 @@ export class ListingPageComponent extends Component {
                     richTitle={richTitle}
                     level={level}
                     duration={duration}
+                    subject={subject}
                     hostLink={hostLink}
                     showContactUser={showContactUser}
                     onContactUser={this.onContactUser}
@@ -466,7 +475,7 @@ export class ListingPageComponent extends Component {
                     onManageDisableScrolling={onManageDisableScrolling}
                   />
                 </div>
-                <BookingPanel
+                {/* <BookingPanel
                   className={css.bookingPanel}
                   listing={currentListing}
                   isOwnListing={isOwnListing}
@@ -482,7 +491,7 @@ export class ListingPageComponent extends Component {
                   lineItems={lineItems}
                   fetchLineItemsInProgress={fetchLineItemsInProgress}
                   fetchLineItemsError={fetchLineItemsError}
-                />
+                /> */}
               </div>
             </div>
           </LayoutWrapperMain>
