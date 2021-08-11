@@ -106,7 +106,6 @@ const EditListingAvailabilityPanel = props => {
         availabilityPlan={availabilityPlan}
         durations={durationOptions}
         onSubmit={(values) => {
-          console.log(values);
           const { duration, ...rest } = values;
           const submitValue = {
             ...availabilityPlan,
