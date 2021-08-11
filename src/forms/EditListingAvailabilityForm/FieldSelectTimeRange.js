@@ -84,12 +84,14 @@ const FieldSelectTimeRangeRenderer = props => {
                                     )
                                   )}
                                 </FieldSelect>
-                                <InlineTextButton
-                                  type="button"
-                                  onClick={() => fields.remove(index)}
-                                >
-                                  <IconClose className={css.closeIcon} />
-                                </InlineTextButton>
+                                {fields.length > 1 && (
+                                  <InlineTextButton
+                                    type="button"
+                                    onClick={() => fields.remove(index)}
+                                  >
+                                    <IconClose className={css.closeIcon} />
+                                  </InlineTextButton>
+                                )}
                               </div>
                             )
                           })}
