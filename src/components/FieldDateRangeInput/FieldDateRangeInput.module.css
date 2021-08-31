@@ -72,6 +72,11 @@
   border-bottom-color: var(--matterColorDark);
 }
 
+.providerTime {
+  font-size: 14px;
+  color: var(--matterColorAnti);
+}
+
 /**
  * Mobile margins mean that labels, inputs (incl separate borders) get margins,
  * but calendar popup doesn't.

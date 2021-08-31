@@ -2,13 +2,25 @@ import moment from 'moment';
 import { isSameDay, isInclusivelyAfterDay, isInclusivelyBeforeDay } from 'react-dates';
 
 import { ensureTimeSlot } from '../../util/data';
-import { START_DATE, END_DATE, dateFromAPIToLocalNoon } from '../../util/dates';
-import { LINE_ITEM_DAY, LINE_ITEM_NIGHT, TIME_SLOT_DAY } from '../../util/types';
+import { START_DATE, END_DATE, dateFromAPIToLocalNoon, dateFromAPIToLocal } from '../../util/dates';
+import { LINE_ITEM_DAY, LINE_ITEM_NIGHT, TIME_SLOT_TIME } from '../../util/types';
 import config from '../../config';
+
+export const filterAvailableTimeSlots = (timeSlots, date) => timeSlots?.filter(
+  timeSlot => {
+    const { start, end } = timeSlot.attributes;
+    const startTime = moment(dateFromAPIToLocal(start));
+    const endTime = moment(dateFromAPIToLocal(end)).format('dddd DD MMM YYYY');
+    const chosenDay = moment(dateFromAPIToLocal(date));
+    const isAfterNow = startTime.diff(moment()) > 0;
+    return startTime.format('dddd DD MMM YYYY') === chosenDay.format('dddd DD MMM YYYY') 
+            && endTime === chosenDay.format('dddd DD MMM YYYY') && isAfterNow;
+  }
+);
 
 // Checks if time slot (propTypes.timeSlot) start time equals a day (moment)
 const timeSlotEqualsDay = (timeSlot, day) => {
-  if (ensureTimeSlot(timeSlot).attributes.type === TIME_SLOT_DAY) {
+  if (ensureTimeSlot(timeSlot).attributes.type === TIME_SLOT_TIME) {
     // Time slots describe available dates by providing a start and
     // an end date which is the following day. In the single date picker
     // the start date is used to represent available dates.
@@ -19,6 +31,17 @@ const timeSlotEqualsDay = (timeSlot, day) => {
     return false;
   }
 };
+
+export const isOutside = (timeSlots) => {
+  if (!timeSlots) {
+    return;
+  }
+  const minDate = dateFromAPIToLocal(ensureTimeSlot(timeSlots[0]).attributes.start);
+  const maxDate = dateFromAPIToLocal(ensureTimeSlot(timeSlots[timeSlots.length - 1]).attributes.end);
+  return date => {
+    return date.isBefore(minDate) || date.isAfter(maxDate)
+  };
+}
 
 /**
  * Return a boolean indicating if given date can be found in an array
@@ -150,6 +173,10 @@ export const isDayBlockedFn = (timeSlots, startDate, endDate, focusedInput, unit
     // otherwise return standard timeslots check
     return day => !timeSlots.find(timeSlot => timeSlotEqualsDay(timeSlot, day));
   }
+};
+
+export const isDateBlocked = (timeSlots) => {
+  return day => !timeSlots.find(timeSlot => timeSlotEqualsDay(timeSlot, day));
 };
 
 /**

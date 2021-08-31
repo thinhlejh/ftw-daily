@@ -31,7 +31,7 @@ import Decimal from 'decimal.js';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import { dateFromLocalToAPI } from '../../util/dates';
 import { TRANSITION_REQUEST_PAYMENT, TX_TRANSITION_ACTOR_CUSTOMER } from '../../util/transaction';
-import { DATE_TYPE_DATE } from '../../util/types';
+import { DATE_TYPE_DATE, DATE_TYPE_DATETIME } from '../../util/types';
 import { unitDivisor, convertMoneyToNumber, convertUnitToSubUnit } from '../../util/currency';
 import config from '../../config';
 import { BookingBreakdown } from '../../components';
@@ -78,17 +78,6 @@ const estimatedTransaction = (bookingStart, bookingEnd, lineItems, userRole) => 
   // Server normalizes night/day bookings to start from 00:00 UTC aka "Thu Mar 29 2018 13:00:00 GMT-1100 (SST)"
   // The result is: local timestamp.subtract(12h).add(timezoneoffset) (in eg. -23 h)
 
-  // local noon -> startOf('day') => 00:00 local => remove timezoneoffset => 00:00 API (UTC)
-  const serverDayStart = dateFromLocalToAPI(
-    moment(bookingStart)
-      .startOf('day')
-      .toDate()
-  );
-  const serverDayEnd = dateFromLocalToAPI(
-    moment(bookingEnd)
-      .startOf('day')
-      .toDate()
-  );
 
   return {
     id: new UUID('estimated-transaction'),
@@ -112,8 +101,8 @@ const estimatedTransaction = (bookingStart, bookingEnd, lineItems, userRole) => 
       id: new UUID('estimated-booking'),
       type: 'booking',
       attributes: {
-        start: serverDayStart,
-        end: serverDayEnd,
+        start: bookingStart,
+        end: bookingEnd,
       },
     },
   };
@@ -139,7 +128,7 @@ const EstimatedBreakdownMaybe = props => {
       unitType={unitType}
       transaction={tx}
       booking={tx.booking}
-      dateType={DATE_TYPE_DATE}
+      dateType={DATE_TYPE_DATETIME}
     />
   ) : null;
 };
