@@ -1029,6 +1029,7 @@
   "TransactionPanel.customerBannedStatus": "The user made the request, but was later banned.",
   "TransactionPanel.declineButton": "Decline",
   "TransactionPanel.declineSaleFailed": "Oops, declining failed. Please try again.",
+  "TransactionPanel.cancelButton": "Cancel",
   "TransactionPanel.deletedListingOrderTitle": "a listing",
   "TransactionPanel.deletedListingTitle": "Deleted listing",
   "TransactionPanel.initialMessageFailed": "Whoops, failed to send message from checkout.",

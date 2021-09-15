@@ -6,7 +6,7 @@ import { storableError } from '../../util/errors';
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import { transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
-import { denormalisedResponseEntities } from '../../util/data';
+import { denormalisedResponseEntities, ensureCurrentUser } from '../../util/data';
 import { TRANSITION_ENQUIRE } from '../../util/transaction';
 import {
   LISTING_PAGE_DRAFT_VARIANT,
@@ -296,9 +296,11 @@ export const sendEnquiry = (listingId, message) => (dispatch, getState, sdk) => 
     });
 };
 
-export const fetchTransactionLineItems = ({ bookingData, listingId, isOwnListing }) => dispatch => {
+export const fetchTransactionLineItems = ({ bookingData, listingId, isOwnListing }) => (dispatch, getState) => {
   dispatch(fetchLineItemsRequest());
-  transactionLineItems({ bookingData, listingId, isOwnListing })
+  const ensuredCurrentUser = ensureCurrentUser(getState().user.currentUser);
+  const isFirstBooking = !ensuredCurrentUser.attributes.profile.metadata.firstTransactionId;
+  transactionLineItems({ bookingData, listingId, isOwnListing, isFirstBooking })
     .then(response => {
       const lineItems = response.data;
       dispatch(fetchLineItemsSuccess(lineItems));
