@@ -10,5 +10,6 @@ export const mapValuesToEntries = values => {
       })
     })
   });
+  console.log(entries);
   return entries;
 };

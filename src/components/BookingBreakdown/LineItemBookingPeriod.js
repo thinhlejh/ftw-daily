@@ -1,8 +1,7 @@
 import React from 'react';
 import { FormattedMessage, FormattedDate } from '../../util/reactIntl';
-import moment from 'moment';
-import { LINE_ITEM_NIGHT, DATE_TYPE_DATE, propTypes } from '../../util/types';
-import { dateFromAPIToLocalNoon } from '../../util/dates';
+import { DATE_TYPE_DATE, propTypes } from '../../util/types';
+import { dateFromAPIToLocal } from '../../util/dates';
 
 import css from './BookingBreakdown.module.css';
 
@@ -64,16 +63,13 @@ const LineItemBookingPeriod = props => {
   // where there are preparation time needed between bookings.
   // Read more: https://www.sharetribe.com/api-reference/marketplace.html#bookings
   const { start, end, displayStart, displayEnd } = booking.attributes;
-  const localStartDate = dateFromAPIToLocalNoon(displayStart || start);
-  const localEndDateRaw = dateFromAPIToLocalNoon(displayEnd || end);
-
-  const isNightly = unitType === LINE_ITEM_NIGHT;
-  const endDay = isNightly ? localEndDateRaw : moment(localEndDateRaw).subtract(1, 'days');
+  const localStartDate = dateFromAPIToLocal(displayStart || start);
+  const localEndDateRaw = dateFromAPIToLocal(displayEnd || end);
 
   return (
     <>
       <div className={css.lineItem}>
-        <BookingPeriod startDate={localStartDate} endDate={endDay} dateType={dateType} />
+        <BookingPeriod startDate={localStartDate} endDate={localEndDateRaw} dateType={dateType} />
       </div>
       <hr className={css.totalDivider} />
     </>

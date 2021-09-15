@@ -6,15 +6,14 @@
  */
 
 import React, { Component } from 'react';
-import { bool, func, object, oneOf, string, arrayOf } from 'prop-types';
-import { Field } from 'react-final-form';
+import { bool, string, arrayOf } from 'prop-types';
 import classNames from 'classnames';
-import { START_DATE, END_DATE } from '../../util/dates';
 import { propTypes } from '../../util/types';
-import { ValidationError } from '../../components';
 
 import DateRangeInput from './DateRangeInput';
 import css from './FieldDateRangeInput.module.css';
+import { FormattedMessage } from 'react-intl/dist/react-intl';
+import { getGMT } from '../../util/dates';
 
 const MAX_MOBILE_SCREEN_WIDTH = 768;
 
@@ -59,79 +58,72 @@ class FieldDateRangeInputComponent extends Component {
       startDateId,
       startDateLabel,
       endDateId,
-      endDateLabel,
-      input,
-      meta,
+      availableTimesLabel,
+      // input,
+      // meta,
       useMobileMargins,
       // Extract focusedInput and onFocusedInputChange so that
       // the same values will not be passed on to subcomponents.
-      focusedInput,
-      onFocusedInputChange,
+      // focusedInput,
+      // onFocusedInputChange,
+      values,
+      format,
       ...rest
     } = this.props;
     /* eslint-disable no-unused-vars */
+    const { timeSlots = [] } = rest;
+
+    const providerGMTLabel = timeSlots && timeSlots[0] ? (
+      <span className={classNames(css.providerTime)} >
+        <FormattedMessage
+          id="ListingPage.providerTimezone"
+          values={{gmt: getGMT(timeSlots[0].attributes.start)}} 
+        />
+      </span>
+    ): null;
 
     if (startDateLabel && !startDateId) {
       throw new Error('startDateId required when a startDateLabel is given');
     }
 
-    if (endDateLabel && !endDateId) {
+    if (availableTimesLabel && !endDateId) {
       throw new Error('endDateId required when a endDateLabel is given');
     }
 
-    const { touched, error } = meta;
-    const value = input.value;
-
     // If startDate is valid label changes color and bottom border changes color too
-    const startDateIsValid = value && value.startDate instanceof Date;
+    // const startDateIsValid = value && value.startDate instanceof Date;
     const startDateLabelClasses = classNames(css.startDateLabel, {
       [css.labelSuccess]: false, //startDateIsValid,
     });
-    const startDateBorderClasses = classNames(css.input, {
-      [css.inputSuccess]: startDateIsValid,
-      [css.inputError]: touched && !startDateIsValid && typeof error === 'string',
-      [css.hover]: this.state.focusedInput === START_DATE,
-    });
 
     // If endDate is valid label changes color and bottom border changes color too
-    const endDateIsValid = value && value.endDate instanceof Date;
+    // const endDateIsValid = value && value.endDate instanceof Date;
     const endDateLabelClasses = classNames(css.endDateLabel, {
       [css.labelSuccess]: false, //endDateIsValid,
     });
-    const endDateBorderClasses = classNames(css.input, {
-      [css.inputSuccess]: endDateIsValid,
-      [css.inputError]: touched && !endDateIsValid && typeof error === 'string',
-      [css.hover]: this.state.focusedInput === END_DATE,
-    });
 
     const label =
-      startDateLabel && endDateLabel ? (
+      startDateLabel && availableTimesLabel ? (
         <div className={classNames(css.labels, { [css.mobileMargins]: useMobileMargins })}>
           <label className={startDateLabelClasses} htmlFor={startDateId}>
             {startDateLabel}
           </label>
           <label className={endDateLabelClasses} htmlFor={endDateId}>
-            {endDateLabel}
+            {availableTimesLabel}
           </label>
         </div>
       ) : null;
 
     // eslint-disable-next-line no-unused-vars
-    const { onBlur, onFocus, type, checked, ...restOfInput } = input;
     const inputProps = {
       unitType,
       onBlur: this.handleBlur,
       onFocus: this.handleFocus,
       useMobileMargins,
       readOnly: typeof window !== 'undefined' && window.innerWidth < MAX_MOBILE_SCREEN_WIDTH,
-      ...restOfInput,
       ...rest,
-      focusedInput: this.state.focusedInput,
-      startDateId,
-      endDateId,
     };
     const classes = classNames(rootClassName || css.fieldRoot, className);
-    const errorClasses = classNames({ [css.mobileMargins]: useMobileMargins });
 
     return (
       <div className={classes}>
@@ -142,10 +134,8 @@ class FieldDateRangeInputComponent extends Component {
             [css.mobileMargins]: useMobileMargins && !this.state.focusedInput,
           })}
         >
-          <div className={startDateBorderClasses} />
-          <div className={endDateBorderClasses} />
+        {providerGMTLabel}
         </div>
-        <ValidationError className={errorClasses} fieldMeta={meta} />
       </div>
     );
   }
@@ -155,14 +145,6 @@ FieldDateRangeInputComponent.defaultProps = {
   className: null,
   rootClassName: null,
   useMobileMargins: false,
-  endDateId: null,
-  endDateLabel: null,
-  endDatePlaceholderText: null,
-  startDateId: null,
-  startDateLabel: null,
-  startDatePlaceholderText: null,
-  focusedInput: null,
-  onFocusedInputChange: null,
   timeSlots: null,
 };
 
@@ -171,21 +153,11 @@ FieldDateRangeInputComponent.propTypes = {
   rootClassName: string,
   unitType: propTypes.bookingUnitType.isRequired,
   useMobileMargins: bool,
-  endDateId: string,
-  endDateLabel: string,
-  endDatePlaceholderText: string,
-  startDateId: string,
-  startDateLabel: string,
-  startDatePlaceholderText: string,
   timeSlots: arrayOf(propTypes.timeSlot),
-  input: object.isRequired,
-  meta: object.isRequired,
-  focusedInput: oneOf([START_DATE, END_DATE]),
-  onFocusedInputChange: func,
 };
 
 const FieldDateRangeInput = props => {
-  return <Field component={FieldDateRangeInputComponent} {...props} />;
+  return <FieldDateRangeInputComponent {...props} />;
 };
 
 export { DateRangeInput };

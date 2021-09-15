@@ -49,6 +49,7 @@ import PanelHeading, {
   HEADING_CANCELED,
   HEADING_DELIVERED,
 } from './PanelHeading';
+import { Button } from '../../components';
 
 import css from './TransactionPanel.module.css';
 
@@ -183,8 +184,11 @@ export class TransactionPanelComponent extends Component {
       intl,
       onAcceptSale,
       onDeclineSale,
+      onCancelByProvider,
+      onCancelByCustomer,
       acceptInProgress,
       declineInProgress,
+      cancelInProgress,
       acceptSaleError,
       declineSaleError,
       onSubmitBookingRequest,
@@ -241,12 +245,14 @@ export class TransactionPanelComponent extends Component {
           headingState: HEADING_REQUESTED,
           showDetailCardHeadings: isCustomer,
           showSaleButtons: isProvider && !isCustomerBanned,
+          showCancelButton: isCustomer,
         };
       } else if (txIsAccepted(tx)) {
         return {
           headingState: HEADING_ACCEPTED,
           showDetailCardHeadings: isCustomer,
           showAddress: isCustomer,
+          showCancelButton: isCustomer || isProvider,
         };
       } else if (txIsDeclined(tx)) {
         return {
@@ -304,7 +310,7 @@ export class TransactionPanelComponent extends Component {
 
     const firstImage =
       currentListing.images && currentListing.images.length > 0 ? currentListing.images[0] : null;
-
+    
     const saleButtons = (
       <SaleActionButtonsMaybe
         showButtons={stateData.showSaleButtons}
@@ -313,9 +319,18 @@ export class TransactionPanelComponent extends Component {
         acceptSaleError={acceptSaleError}
         declineSaleError={declineSaleError}
         onAcceptSale={() => onAcceptSale(currentTransaction.id)}
-        onDeclineSale={() => onDeclineSale(currentTransaction.id)}
+        onDeclineSale={() => onDeclineSale(currentTransaction.id, currentTransaction.customer)}
       />
     );
+
+    const cancelButton = (
+      <Button 
+          inProgress={cancelInProgress}
+          disabled={cancelInProgress}
+          onClick={() => isProvider ? onCancelByProvider(currentTransaction.id, currentTransaction.customer) : onCancelByCustomer(currentTransaction)}>
+        <FormattedMessage id='TransactionPanel.cancelButton' />
+      </Button>
+    )
 
     const showSendMessageForm =
       !isCustomerBanned && !isCustomerDeleted && !isProviderBanned && !isProviderDeleted;
@@ -463,6 +478,7 @@ export class TransactionPanelComponent extends Component {
               {stateData.showSaleButtons ? (
                 <div className={css.desktopActionButtons}>{saleButtons}</div>
               ) : null}
+              {stateData.showCancelButton ? cancelButton : null}
             </div>
           </div>
         </div>

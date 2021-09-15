@@ -6,10 +6,9 @@ import classNames from 'classnames';
 import moment from 'moment';
 import config from '../../config';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
-import { required, bookingDatesRequired, composeValidators } from '../../util/validators';
-import { START_DATE, END_DATE } from '../../util/dates';
+import { required, composeValidators } from '../../util/validators';
 import { propTypes } from '../../util/types';
-import { Form, IconSpinner, PrimaryButton, FieldDateRangeInput } from '../../components';
+import { FieldDateRangeInput, Form, IconSpinner, PrimaryButton } from '../../components';
 import EstimatedBreakdownMaybe from './EstimatedBreakdownMaybe';
 
 import css from './BookingDatesForm.module.css';
@@ -36,16 +35,17 @@ export class BookingDatesFormComponent extends Component {
   // focus on that input, otherwise continue with the
   // default handleSubmit function.
   handleFormSubmit(e) {
-    const { startDate, endDate } = e.bookingDates || {};
-    if (!startDate) {
-      e.preventDefault();
-      this.setState({ focusedInput: START_DATE });
-    } else if (!endDate) {
-      e.preventDefault();
-      this.setState({ focusedInput: END_DATE });
-    } else {
-      this.props.onSubmit(e);
+    const { selectedTimeSlotId } = e || {};
+    const { start, end } = this.props.timeSlots?.find(timeSlot => timeSlot.id.uuid === selectedTimeSlotId)?.attributes || {};
+    if (!start || !end) {
+      return;
     }
+    this.props.onSubmit({
+      bookingDates: {
+        startDate: start,
+        endDate: end,
+      }
+    });
   }
 
   // When the values of the form are updated we need to fetch
@@ -53,14 +53,14 @@ export class BookingDatesFormComponent extends Component {
   // In case you add more fields to the form, make sure you add
   // the values here to the bookingData object.
   handleOnChange(formValues) {
-    const { startDate, endDate } =
-      formValues.values && formValues.values.bookingDates ? formValues.values.bookingDates : {};
+    const { selectedTimeSlotId } = formValues.values || {};
+    const { start, end } = this.props.timeSlots?.find(timeSlot => timeSlot.id.uuid === selectedTimeSlotId)?.attributes || {};
     const listingId = this.props.listingId;
     const isOwnListing = this.props.isOwnListing;
 
-    if (startDate && endDate && !this.props.fetchLineItemsInProgress) {
+    if (start && end && !this.props.fetchLineItemsInProgress) {
       this.props.onFetchTransactionLineItems({
-        bookingData: { startDate, endDate },
+        bookingData: { startDate: start, endDate: end },
         listingId,
         isOwnListing,
       });
@@ -111,23 +111,19 @@ export class BookingDatesFormComponent extends Component {
             lineItems,
             fetchLineItemsInProgress,
             fetchLineItemsError,
+            form,
           } = fieldRenderProps;
-          const { startDate, endDate } = values && values.bookingDates ? values.bookingDates : {};
+          const { start, end } = timeSlots?.find(timeSlot => timeSlot.id.uuid === values.selectedTimeSlotId)?.attributes || {};
+          // const { startDate, endDate } = values && values.bookingDates ? values.bookingDates : {};
 
           const bookingStartLabel = intl.formatMessage({
             id: 'BookingDatesForm.bookingStartTitle',
           });
-          const bookingEndLabel = intl.formatMessage({
+          const availableTimesLabel = intl.formatMessage({
             id: 'BookingDatesForm.bookingEndTitle',
           });
           const requiredMessage = intl.formatMessage({
             id: 'BookingDatesForm.requiredDate',
-          });
-          const startDateErrorMessage = intl.formatMessage({
-            id: 'FieldDateRangeInput.invalidStartDate',
-          });
-          const endDateErrorMessage = intl.formatMessage({
-            id: 'FieldDateRangeInput.invalidEndDate',
           });
           const timeSlotsError = fetchTimeSlotsError ? (
             <p className={css.sideBarError}>
@@ -141,11 +137,11 @@ export class BookingDatesFormComponent extends Component {
           // If you have added new fields to the form that will affect to pricing,
           // you need to add the values to handleOnChange function
           const bookingData =
-            startDate && endDate
+            start && end
               ? {
                   unitType,
-                  startDate,
-                  endDate,
+                  startDate: start,
+                  endDate: end,
                 }
               : null;
 
@@ -201,23 +197,21 @@ export class BookingDatesFormComponent extends Component {
                 }}
               />
               <FieldDateRangeInput
+                form={form}
+                values={values}
                 className={css.bookingDates}
-                name="bookingDates"
                 unitType={unitType}
                 startDateId={`${formId}.bookingStartDate`}
                 startDateLabel={bookingStartLabel}
                 startDatePlaceholderText={startDatePlaceholderText}
                 endDateId={`${formId}.bookingEndDate`}
-                endDateLabel={bookingEndLabel}
+                availableTimesLabel={availableTimesLabel}
                 endDatePlaceholderText={endDatePlaceholderText}
-                focusedInput={this.state.focusedInput}
-                onFocusedInputChange={this.onFocusedInputChange}
                 format={identity}
                 timeSlots={timeSlots}
                 useMobileMargins
                 validate={composeValidators(
-                  required(requiredMessage),
-                  bookingDatesRequired(startDateErrorMessage, endDateErrorMessage)
+                  required(requiredMessage)
                 )}
                 disabled={fetchLineItemsInProgress}
               />

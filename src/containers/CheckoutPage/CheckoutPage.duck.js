@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import config from '../../config';
 import { initiatePrivileged, transitionPrivileged } from '../../util/api';
-import { denormalisedResponseEntities } from '../../util/data';
+import { denormalisedResponseEntities, ensureCurrentUser } from '../../util/data';
 import { storableError } from '../../util/errors';
 import {
   TRANSITION_REQUEST_PAYMENT,
@@ -300,7 +300,6 @@ export const sendMessage = params => (dispatch, getState, sdk) => {
  */
 export const speculateTransaction = (orderParams, transactionId) => (dispatch, getState, sdk) => {
   dispatch(speculateTransactionRequest());
-
   // If we already have a transaction ID, we should transition, not
   // initiate.
   const isTransition = !!transactionId;

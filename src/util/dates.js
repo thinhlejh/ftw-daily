@@ -101,6 +101,31 @@ export const dateFromAPIToLocalNoon = date => {
 };
 
 /**
+ * Convert date given by API to something meaningful noon on browser's timezone
+ * So, what happens is that date given by client
+ * ("Fri Mar 30 2018 12:00:00 GMT-1100 (SST)" aka "Fri Mar 30 2018 23:00:00 GMT+0000 (UTC)")
+ * will be read as UTC time. Then API normalizes night/day bookings to
+ * start from 00:00 UTC (i.e. discards hours from UTC day).
+ * So Api gives 00:00 UTC which (in our example) would be locally
+ * "Thu Mar 29 2018 13:00:00 GMT-1100 (SST)".
+ *
+ * The resulting timestamp from API is:
+ * localTimestamp.subtract(12h).add(timezoneoffset) (in eg. -23 h)
+ *
+ * So, this function adds those removed hours back.
+ *
+ * @param {Date} date is a local date object
+ *
+ * @returns {Date} date (given by API as UTC 00:00) converted back to local noon.
+ */
+ export const dateFromAPIToLocal = date => moment(date).toDate();
+
+ export const getGMT = date => {
+   const utcOffset = moment(date).utcOffset() / 60;
+   return utcOffset >= 0 ? `+${utcOffset}` : `${utcOffset}`;
+ };
+
+/**
  * Convert local date for API.
  * Date given by browser
  * ("Fri Mar 30 2018 12:00:00 GMT-1100 (SST)" aka "Fri Mar 30 2018 23:00:00 GMT+0000 (UTC)")
