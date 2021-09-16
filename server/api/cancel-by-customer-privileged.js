@@ -1,4 +1,5 @@
 const { getTrustedSdk, handleError, serialize, getIntegrationSdk } = require('../api-util/sdk');
+const { TRANSITION_ACCEPT, TRANSITION_CANCEL_BY_CUSTOMER_AFTER_ACCEPTED_WITH_REFUND, TRANSITION_CANCEL_BY_CUSTOMER_AFTER_ACCEPTED, TRANSITION_CANCEL_BY_CUSTOMER_BEFORE_ACCEPTED_WITH_REFUND, TRANSITION_CANCEL_BY_CUSTOMER_BEFORE_ACCEPTED } = require('../api-util/transaction');
 
 module.exports = (req, res) => {
   const now = new Date();
@@ -11,17 +12,15 @@ module.exports = (req, res) => {
   const timeGap = Math.abs((createdAt - now) / (1000 * 60 * 60 * 24));
   let nextTransition = null;
 
-  if (lastTransition === 'transition/accept' && timeGap <= 2) {
-    nextTransition = 'transition/cancel-by-customer-after-accepted-with-refund';
+  if (lastTransition === TRANSITION_ACCEPT && timeGap <= 2) {
+    nextTransition = TRANSITION_CANCEL_BY_CUSTOMER_AFTER_ACCEPTED_WITH_REFUND;
   } else if (lastTransition === 'transition/accept') {
-    nextTransition = 'transition/cancel-by-customer-after-accepted';
+    nextTransition = TRANSITION_CANCEL_BY_CUSTOMER_AFTER_ACCEPTED;
   } else if (timeGap <= 2) {
-    nextTransition = 'transition/cancel-by-customer-before-accepted-with-refund';
+    nextTransition = TRANSITION_CANCEL_BY_CUSTOMER_BEFORE_ACCEPTED_WITH_REFUND;
   } else {
-    nextTransition = 'transition/cancel-by-customer-before-accepted';
-  }
-
-  console.log(lastTransition, nextTransition);
+    nextTransition = TRANSITION_CANCEL_BY_CUSTOMER_BEFORE_ACCEPTED;
+  };
 
   intergrationSdk.users.updateProfile({
     id: customer.id,
@@ -55,13 +54,5 @@ module.exports = (req, res) => {
     }).catch(e => {
       handleError(res, e);
     });
-  })
-
-  // const cancelTransition = 
-
-  // const listingId = bodyParams && bodyParams.params ? bodyParams.params.listingId : null;
-
-  // const sdk = getSdk(req, res);
-  // let lineItems = null;
-  // let userId = null;
+  });
 };
